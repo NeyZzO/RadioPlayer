@@ -1,0 +1,194 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:RadioPlayer.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:converters="using:RadioPlayer.Converters"
+             mc:Ignorable="d" d:DesignWidth="680" d:DesignHeight="600"
+             x:Class="RadioPlayer.Views.AllStationsView"
+             x:DataType="vm:AllStationsViewModel">
+
+    <UserControl.Resources>
+        <StreamGeometry x:Key="heart_regular">M12.8198687,5.57958759 L11.9991485,6.40209417 L11.1758977,5.57884333 C9.07682963,3.47977526 5.67356786,3.47977526 3.5744998,5.57884333 C1.47543173,7.6779114 1.47543173,11.0811732 3.5744998,13.1802412 L11.4698687,21.0756101 C11.7627619,21.3685033 12.2376356,21.3685033 12.5305288,21.0756101 L20.4319958,13.1787767 C22.5263889,11.0727481 22.5299763,7.6790351 20.4305288,5.57958759 C18.3276384,3.4766972 14.9227559,3.47670037 12.8198687,5.57958759 Z M19.3684016,12.1210587 L12.0001987,19.4846198 L4.63515997,12.1195811 C3.12187834,10.6062994 3.12187834,8.15278513 4.63515997,6.6395035 C6.1484416,5.12622187 8.60195589,5.12622187 10.1152375,6.6395035 L11.4726817,7.99694767 C11.7705471,8.2948131 12.2552416,8.28900906 12.545889,7.98409641 L13.8805288,6.64024776 C15.3976301,5.12314654 17.8527652,5.12314425 19.3698687,6.64024776 C20.8835151,8.15389424 20.8809293,10.6001281 19.3684016,12.1210587 Z</StreamGeometry>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="TextBox.filter-box">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="TextBox.filter-box:focus">
+            <Setter Property="BorderBrush" Value="#1DB954"/>
+        </Style>
+        <Style Selector="ComboBox.filter-combo">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#333333"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="Button.sort-btn">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+        <Style Selector="Button.sort-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#333333"/>
+        </Style>
+        <Style Selector="Button.page-btn">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="MinWidth" Value="40"/>
+        </Style>
+        <Style Selector="Button.page-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#333333"/>
+        </Style>
+        <Style Selector="Button.page-btn:disabled /template/ ContentPresenter">
+            <Setter Property="Opacity" Value="0.4"/>
+        </Style>
+        <Style Selector="Border.station-card">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Border.station-card:pointerover">
+            <Setter Property="Background" Value="#2a2a2a"/>
+        </Style>
+        <Style Selector="Button.fav-btn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#888888"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style Selector="Button.fav-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#333333"/>
+        </Style>
+        <Style Selector="Border.tag">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto, Auto, *, Auto">
+        <StackPanel Grid.Row="0" Spacing="8" Margin="24,24,24,16">
+            <TextBlock Text="Toutes les stations" FontSize="28" FontWeight="Bold" Foreground="White"/>
+            <TextBlock FontSize="14" Foreground="#888888">
+                <Run Text="{Binding TotalStations, StringFormat='{}{0:N0} stations disponibles'}"/>
+            </TextBlock>
+        </StackPanel>
+
+        <Border Grid.Row="1" Background="#1f1f1f" CornerRadius="8" Margin="24,0,24,16" Padding="16">
+            <Grid RowDefinitions="Auto" ColumnDefinitions="*, *, Auto, Auto">
+                <StackPanel Grid.Column="0" Spacing="6" Margin="0,0,8,0">
+                    <TextBlock Text="Tags" FontSize="12" Foreground="#888888"/>
+                    <TextBox Classes="filter-box" Watermark="Ex: jazz, rock..." Text="{Binding SearchTags, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="6" Margin="8,0,8,0">
+                    <TextBlock Text="Pays" FontSize="12" Foreground="#888888"/>
+                    <TextBox Classes="filter-box" Watermark="Ex: France..." Text="{Binding SearchCountry, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="6" Margin="8,0,8,0">
+                    <TextBlock Text="Trier par" FontSize="12" Foreground="#888888"/>
+                    <ComboBox Classes="filter-combo" ItemsSource="{Binding SortOptions}" SelectedValue="{Binding SelectedSort}" SelectedValueBinding="{Binding Value}" DisplayMemberBinding="{Binding Label}" MinWidth="120"/>
+                </StackPanel>
+                <StackPanel Grid.Column="3" Spacing="6" Margin="8,0,0,0">
+                    <TextBlock Text="Ordre" FontSize="12" Foreground="#888888"/>
+                    <Button Classes="sort-btn" Command="{Binding ToggleSortOrderCommand}" MinWidth="50">
+                        <TextBlock Text="{Binding IsSortDescending, Converter={x:Static converters:BoolToSortArrowConverter.Instance}}" FontSize="14"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" Margin="24,0,24,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Panel>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsLoading}">
+                    <TextBlock Text="Chargement..." FontSize="14" Foreground="#888888"/>
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding Stations}" IsVisible="{Binding !IsLoading}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="8"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="vm:RadioStationViewModel">
+                            <Border Classes="station-card">
+                                <Grid ColumnDefinitions="Auto, *, Auto">
+                                    <Border Grid.Column="0" CornerRadius="6" ClipToBounds="True" Width="64" Height="64" Margin="0,0,16,0">
+                                        <Panel Background="#333333">
+                                            <Image asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                                            <TextBlock Text="❓" FontSize="24" FontFamily="{StaticResource EmojiFont}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding ImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                        </Panel>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="15" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="{Binding CountryCode, Converter={x:Static converters:CountryCodeToFlagConverter.Instance}}" FontSize="14" FontFamily="{StaticResource EmojiFont}"/>
+                                            <TextBlock Text="{Binding Country}" FontSize="13" Foreground="#888888" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                        <ItemsControl ItemsSource="{Binding Tags}" Margin="0,4,0,0">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Classes="tag" Margin="0,0,4,0">
+                                                        <TextBlock Text="{Binding}" FontSize="10" Foreground="#AAAAAA"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Classes="fav-btn" VerticalAlignment="Center">
+                                        <PathIcon Height="20" Width="20" Foreground="#888888" Data="{StaticResource heart_regular}"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Panel>
+        </ScrollViewer>
+
+        <Border Grid.Row="3" Background="#1f1f1f" CornerRadius="8" Margin="24,16,24,24" Padding="16">
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="#888888" FontSize="13">
+                    <Run Text="Page "/><Run Text="{Binding CurrentPage}"/><Run Text=" sur "/><Run Text="{Binding TotalPages}"/>
+                </TextBlock>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <Button Classes="page-btn" Command="{Binding FirstPageCommand}" ToolTip.Tip="Première page">
+                        <TextBlock Text="⏪" FontSize="12"/>
+                    </Button>
+                    <Button Classes="page-btn" Command="{Binding PreviousPageCommand}" ToolTip.Tip="Page précédente">
+                        <TextBlock Text="◀️" FontSize="12"/>
+                    </Button>
+                    <Button Classes="page-btn" Command="{Binding NextPageCommand}" ToolTip.Tip="Page suivante">
+                        <TextBlock Text="▶️" FontSize="12"/>
+                    </Button>
+                    <Button Classes="page-btn" Command="{Binding LastPageCommand}" ToolTip.Tip="Dernière page">
+                        <TextBlock Text="⏩" FontSize="12"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

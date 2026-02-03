@@ -13,10 +13,6 @@
         ExtendClientAreaToDecorationsHint="True"
         Title="RadioPlayer">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-
     <Window.Styles>
         <Style Selector="Button.nav-btn">
             <Setter Property="Background" Value="Transparent"/>
@@ -76,16 +72,28 @@
                     <DockPanel>
                         <!-- Navigation Buttons -->
                         <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="12,16,12,0">
-                            <Button Classes="nav-btn" HorizontalAlignment="Stretch">
+                            <Button Classes="nav-btn" HorizontalAlignment="Stretch" Command="{Binding NavigateHomeCommand}">
                                 <StackPanel Orientation="Horizontal" Spacing="12">
                                     <TextBlock Text="🏠" FontSize="18" FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
                                     <TextBlock Text="Accueil" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </Button>
-                            <Button Classes="nav-btn" HorizontalAlignment="Stretch">
+                            <Button Classes="nav-btn" HorizontalAlignment="Stretch" Command="{Binding NavigateFavoritesCommand}">
                                 <StackPanel Orientation="Horizontal" Spacing="12">
                                     <TextBlock Text="🩵" FontSize="18" FontFamily="{StaticResource EmojiFont}"  FontWeight="Normal"/>
                                     <TextBlock Text="Favoris" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="nav-btn" HorizontalAlignment="Stretch" Command="{Binding NavigateSearchCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock Text="🔎" FontSize="18" FontFamily="{StaticResource EmojiFont}"  FontWeight="Normal"/>
+                                    <TextBlock Text="Recherche" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="nav-btn" HorizontalAlignment="Stretch" Command="{Binding NavigateAllStationsCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock Text="📻" FontSize="18" FontFamily="{StaticResource EmojiFont}"  FontWeight="Normal"/>
+                                    <TextBlock Text="Toutes les stations" VerticalAlignment="Center" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </Button>
                         </StackPanel>
@@ -162,24 +170,7 @@
 
                 <!-- Main Content -->
                 <Border Grid.Column="1" Background="#181818" CornerRadius="12,0,0,0" Margin="0,32,0,0" ClipToBounds="True">
-                    <ScrollViewer Padding="24,24,24,-80" 
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="32" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <!-- En-tête -->
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Bienvenue sur RadioPlayer" FontSize="28" FontWeight="Bold" Foreground="White"/>
-                                <TextBlock Text="Découvrez les meilleures stations de radio" 
-                                           FontSize="14" Foreground="#888888"/>
-                            </StackPanel>
-
-                            <!-- Radios populaires en France -->
-                            <controls:RadioStationSlider DataContext="{Binding FrenchRadiosSlider}" HorizontalAlignment="Stretch"/>
-
-                            <!-- Radios populaires dans le monde -->
-                            <controls:RadioStationSlider DataContext="{Binding WorldRadiosSlider}" HorizontalAlignment="Stretch"/>
-                        </StackPanel>
-                    </ScrollViewer>
+                    <ContentControl Content="{Binding CurrentPage}"/>
                 </Border>
             </Grid>
 

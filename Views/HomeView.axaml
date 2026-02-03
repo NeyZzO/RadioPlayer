@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:RadioPlayer.ViewModels"
+             xmlns:controls="using:RadioPlayer.Controls"
+             mc:Ignorable="d" d:DesignWidth="680" d:DesignHeight="450"
+             x:Class="RadioPlayer.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+    <ScrollViewer Padding="24,24,24,-80" 
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="32" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <!-- En-tête -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Bienvenue sur RadioPlayer" FontSize="28" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Découvrez les meilleures stations de radio" 
+                           FontSize="14" Foreground="#888888"/>
+            </StackPanel>
+
+            <!-- Radios populaires en France -->
+            <controls:RadioStationSlider DataContext="{Binding FrenchRadiosSlider}" HorizontalAlignment="Stretch"/>
+
+            <!-- Radios populaires dans le monde -->
+            <controls:RadioStationSlider DataContext="{Binding WorldRadiosSlider}" HorizontalAlignment="Stretch"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

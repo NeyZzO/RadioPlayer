@@ -54,6 +54,9 @@
                 <Border CornerRadius="6" ClipToBounds="True" Width="156" Height="156">
                     <Panel Background="#333333">
                         <Image asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                        <TextBlock Text="📻" FontSize="24" FontFamily="{StaticResource EmojiFont}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsVisible="{Binding ImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
                     </Panel>
                 </Border>
                 <Button Classes="fav-btn" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,8,8">

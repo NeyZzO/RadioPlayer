@@ -29,5 +29,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Semi.Avalonia" Version="11.3.7.2" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23" />
   </ItemGroup>
 </Project>
