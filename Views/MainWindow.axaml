@@ -1,0 +1,226 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RadioPlayer.ViewModels"
+        xmlns:controls="using:RadioPlayer.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="550"
+        x:Class="RadioPlayer.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        Title="RadioPlayer">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Button.nav-btn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="CornerRadius" Value="8"/>
+        </Style>
+        <Style Selector="Button.nav-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3d3d3d"/>
+        </Style>
+        <Style Selector="Button.category-btn">
+            <Setter Property="Background" Value="#2a2a2a"/>
+            <Setter Property="Foreground" Value="#CCCCCC"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="Button.category-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#4a4a4a"/>
+        </Style>
+        <Style Selector="Button.player-btn">
+            <Setter Property="Background" Value="#1DB954"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="CornerRadius" Value="25"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+        <Style Selector="Button.player-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1ed760"/>
+        </Style>
+    </Window.Styles>
+
+    <Window.Resources>
+		<StreamGeometry x:Key="heart_regular">M12.8198687,5.57958759 L11.9991485,6.40209417 L11.1758977,5.57884333 C9.07682963,3.47977526 5.67356786,3.47977526 3.5744998,5.57884333 C1.47543173,7.6779114 1.47543173,11.0811732 3.5744998,13.1802412 L11.4698687,21.0756101 C11.7627619,21.3685033 12.2376356,21.3685033 12.5305288,21.0756101 L20.4319958,13.1787767 C22.5263889,11.0727481 22.5299763,7.6790351 20.4305288,5.57958759 C18.3276384,3.4766972 14.9227559,3.47670037 12.8198687,5.57958759 Z M19.3684016,12.1210587 L12.0001987,19.4846198 L4.63515997,12.1195811 C3.12187834,10.6062994 3.12187834,8.15278513 4.63515997,6.6395035 C6.1484416,5.12622187 8.60195589,5.12622187 10.1152375,6.6395035 L11.4726817,7.99694767 C11.7705471,8.2948131 12.2552416,8.28900906 12.545889,7.98409641 L13.8805288,6.64024776 C15.3976301,5.12314654 17.8527652,5.12314425 19.3698687,6.64024776 C20.8835151,8.15389424 20.8809293,10.6001281 19.3684016,12.1210587 Z</StreamGeometry>
+    </Window.Resources>
+
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="#121212"
+                    TintOpacity="1"
+                    MaterialOpacity="0.85" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+
+        <Grid RowDefinitions="*, Auto">
+            <!-- Main Content Area -->
+            <Grid Grid.Row="0" ColumnDefinitions="220, *">
+
+                <!-- Sidebar -->
+                <Border Grid.Column="0" Background="#1a1a1a" CornerRadius="0,12,0,0" Margin="0,32,0,0">
+                    <DockPanel>
+                        <!-- Navigation Buttons -->
+                        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="12,16,12,0">
+                            <Button Classes="nav-btn" HorizontalAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock Text="🏠" FontSize="18" FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                    <TextBlock Text="Accueil" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="nav-btn" HorizontalAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <TextBlock Text="🩵" FontSize="18" FontFamily="{StaticResource EmojiFont}"  FontWeight="Normal"/>
+                                    <TextBlock Text="Favoris" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Separator -->
+                        <Border DockPanel.Dock="Top" Height="1" Background="#333333" Margin="12,16,12,12"/>
+
+                        <!-- Categories Section -->
+                        <DockPanel Margin="12,0,12,12">
+                            <TextBlock DockPanel.Dock="Top" Text="CATÉGORIES" FontSize="11" FontWeight="Bold" 
+                                       Foreground="#888888" Margin="4,0,0,10" LetterSpacing="1"/>
+
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <StackPanel Spacing="6">
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="🎵" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Pop" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="🎸" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Rock" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="🎷" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Jazz" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="🎻" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Classique" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="🎤" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Hip-Hop" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="🎹" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Électro" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="📰" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Actualités" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="⚽" FontSize="14"  FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Sport" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="category-btn" HorizontalAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="🌍" FontSize="14" FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                                            <TextBlock Text="Monde" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- Main Content -->
+                <Border Grid.Column="1" Background="#181818" CornerRadius="12,0,0,0" Margin="0,32,0,0" ClipToBounds="True">
+                    <ScrollViewer Padding="24,24,24,-80" 
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="32" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <!-- En-tête -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Bienvenue sur RadioPlayer" FontSize="28" FontWeight="Bold" Foreground="White"/>
+                                <TextBlock Text="Découvrez les meilleures stations de radio" 
+                                           FontSize="14" Foreground="#888888"/>
+                            </StackPanel>
+
+                            <!-- Radios populaires en France -->
+                            <controls:RadioStationSlider DataContext="{Binding FrenchRadiosSlider}" HorizontalAlignment="Stretch"/>
+
+                            <!-- Radios populaires dans le monde -->
+                            <controls:RadioStationSlider DataContext="{Binding WorldRadiosSlider}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+
+            <!-- Player Bar -->
+            <Border Grid.Row="1" Height="90" Background="#181818" 
+                    BorderBrush="#282828" BorderThickness="0,1,0,0" Padding="16">
+                <Grid ColumnDefinitions="Auto, *, Auto">
+                    <!-- Station Info -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+                        <Border CornerRadius="6" ClipToBounds="True" Width="56" Height="56">
+                            <Panel Background="#333333">
+                                <Image Source="{Binding RadioStationImageUrl}" Stretch="UniformToFill"/>
+                                <TextBlock Text="📻" FontSize="24" FontFamily="{StaticResource EmojiFont}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           IsVisible="{Binding RadioStationImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                            </Panel>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Text="{Binding RadioStationName}" FontWeight="SemiBold" 
+                                       FontSize="14" Foreground="White"/>
+                            <TextBlock Text="{Binding RadioStationGenre}" FontSize="12" Foreground="#888888"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Play Controls -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" Spacing="16">
+                        <Button Classes="player-btn">
+                            <TextBlock Text="▶" FontSize="18" Margin="2,0,0,0"/>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Volume Control -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                        <TextBlock Text="🔊" FontSize="16" FontFamily="{StaticResource EmojiFont}" VerticalAlignment="Center" Foreground="#888888"/>
+                        <Slider Width="120" Minimum="0" Maximum="100" 
+                                Value="{Binding Volume, Mode=TwoWay}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Panel>
+
+</Window>

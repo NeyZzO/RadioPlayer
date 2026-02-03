@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:RadioPlayer.ViewModels"
+             xmlns:converters="using:RadioPlayer.Converters"
+             mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="260"
+             x:Class="RadioPlayer.Controls.RadioStationCard"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             x:DataType="vm:RadioStationViewModel"
+             Name="CardRoot">
+
+    <UserControl.Styles>
+        <Style Selector="Border.card-container">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Width" Value="180"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Border.card-container:pointerover">
+            <Setter Property="Background" Value="#2a2a2a"/>
+        </Style>
+        <Style Selector="Button.fav-btn">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="Background" Value="#1DB954"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.fav-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1ed760"/>
+        </Style>
+        <Style Selector="Border.card-container:pointerover Button.fav-btn">
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        <Style Selector="Border.tag">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Border Classes="card-container">
+        <StackPanel Spacing="10">
+            <Panel>
+                <Border CornerRadius="6" ClipToBounds="True" Width="156" Height="156">
+                    <Panel Background="#333333">
+                        <Image asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
+                    </Panel>
+                </Border>
+                <Button Classes="fav-btn" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,8,8">
+                    <PathIcon Height="18" Width="18" Foreground="#FAFAFA"             
+                        Data="{StaticResource heart_regular}"/>
+                </Button>
+            </Panel>
+            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14" Foreground="White" TextTrimming="CharacterEllipsis" MaxWidth="156"/>
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock Text="{Binding CountryCode, Converter={x:Static converters:CountryCodeToFlagConverter.Instance}}" FontSize="14" FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
+                <TextBlock Text="{Binding Country}" FontSize="12" Foreground="#888888" TextTrimming="CharacterEllipsis" MaxWidth="130"/>
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding Tags}" MaxWidth="156">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="tag" Margin="0,0,4,4">
+                            <TextBlock Text="{Binding}" FontSize="10" Foreground="#AAAAAA"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Border>
+</UserControl>

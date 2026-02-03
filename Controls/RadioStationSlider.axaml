@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:RadioPlayer.ViewModels"
+             xmlns:controls="using:RadioPlayer.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="320"
+             x:Class="RadioPlayer.Controls.RadioStationSlider"
+             x:DataType="vm:RadioStationSliderViewModel"
+             ClipToBounds="True">
+
+    <UserControl.Styles>
+        <Style Selector="Button.scroll-btn">
+            <Setter Property="Background" Value="#282828"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Opacity" Value="0.9"/>
+        </Style>
+        <Style Selector="Button.scroll-btn:pointerover">
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        <Style Selector="Button.scroll-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#404040"/>
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
+            <TextBlock Text="{Binding Icon}" FontSize="20" FontFamily="{StaticResource EmojiFont}"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" 
+                       Foreground="White" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <Panel ClipToBounds="True">
+            <ScrollViewer Name="StationsScrollViewer"
+                          HorizontalScrollBarVisibility="Hidden" 
+                          VerticalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding Stations}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,48,0"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="vm:RadioStationViewModel">
+                            <controls:RadioStationCard DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Panel>
+    </DockPanel>
+</UserControl>
