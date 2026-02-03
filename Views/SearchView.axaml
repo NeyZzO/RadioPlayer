@@ -3,9 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:RadioPlayer.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:converters="using:RadioPlayer.Converters"
              mc:Ignorable="d" d:DesignWidth="680" d:DesignHeight="450"
              x:Class="RadioPlayer.Views.SearchView"
              x:DataType="vm:SearchViewModel">
+
+    <UserControl.Resources>
+        <StreamGeometry x:Key="heart_regular">M12.8198687,5.57958759 L11.9991485,6.40209417 L11.1758977,5.57884333 C9.07682963,3.47977526 5.67356786,3.47977526 3.5744998,5.57884333 C1.47543173,7.6779114 1.47543173,11.0811732 3.5744998,13.1802412 L11.4698687,21.0756101 C11.7627619,21.3685033 12.2376356,21.3685033 12.5305288,21.0756101 L20.4319958,13.1787767 C22.5263889,11.0727481 22.5299763,7.6790351 20.4305288,5.57958759 C18.3276384,3.4766972 14.9227559,3.47670037 12.8198687,5.57958759 Z M19.3684016,12.1210587 L12.0001987,19.4846198 L4.63515997,12.1195811 C3.12187834,10.6062994 3.12187834,8.15278513 4.63515997,6.6395035 C6.1484416,5.12622187 8.60195589,5.12622187 10.1152375,6.6395035 L11.4726817,7.99694767 C11.7705471,8.2948131 12.2552416,8.28900906 12.545889,7.98409641 L13.8805288,6.64024776 C15.3976301,5.12314654 17.8527652,5.12314425 19.3698687,6.64024776 C20.8835151,8.15389424 20.8809293,10.6001281 19.3684016,12.1210587 Z</StreamGeometry>
+        <StreamGeometry x:Key="heart_filled">M12.82,5.58 C10.72,3.48 7.32,3.48 5.22,5.58 C3.12,7.68 3.12,11.08 5.22,13.18 L12,19.96 L18.78,13.18 C20.88,11.08 20.88,7.68 18.78,5.58 C16.68,3.48 13.28,3.48 11.18,5.58 L12,6.4 L12.82,5.58 Z</StreamGeometry>
+    </UserControl.Resources>
 
     <UserControl.Styles>
         <Style Selector="TextBox.search-box">
@@ -30,6 +37,30 @@
         <Style Selector="Button.search-btn:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="#1ed760"/>
         </Style>
+        <Style Selector="Border.station-card">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Border.station-card:pointerover">
+            <Setter Property="Background" Value="#2a2a2a"/>
+        </Style>
+        <Style Selector="Button.fav-btn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style Selector="Button.fav-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#333333"/>
+        </Style>
+        <Style Selector="Border.tag">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
     </UserControl.Styles>
 
     <ScrollViewer Padding="24,24,24,24" 
@@ -39,7 +70,7 @@
             <!-- En-tête -->
             <StackPanel Spacing="8">
                 <TextBlock Text="Rechercher une station" FontSize="28" FontWeight="Bold" Foreground="White"/>
-                <TextBlock Text="Trouvez des stations de radio par nom, genre ou pays." 
+                <TextBlock Text="Trouvez des stations de radio par nom." 
                            FontSize="14" Foreground="#888888" TextWrapping="Wrap"/>
             </StackPanel>
 
@@ -60,8 +91,9 @@
                 </Button>
             </Grid>
 
-            <!-- Placeholder pour les résultats -->
-            <Border Background="#252525" CornerRadius="12" Padding="32" Margin="0,16,0,0">
+            <!-- Placeholder initial -->
+            <Border Background="#252525" CornerRadius="12" Padding="32" Margin="0,16,0,0"
+                    IsVisible="{Binding ShowPlaceholder}">
                 <StackPanel Spacing="12" HorizontalAlignment="Center">
                     <TextBlock Text="🔎" FontSize="48" FontFamily="{StaticResource EmojiFont}" 
                                HorizontalAlignment="Center"/>
@@ -71,6 +103,98 @@
                                FontSize="13" Foreground="#666666" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
+
+            <!-- Chargement -->
+            <Border Background="#252525" CornerRadius="12" Padding="32" Margin="0,16,0,0"
+                    IsVisible="{Binding IsLoading}">
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="⏳" FontSize="48" FontFamily="{StaticResource EmojiFont}" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Recherche en cours..." 
+                               FontSize="16" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Aucun résultat -->
+            <Border Background="#252525" CornerRadius="12" Padding="32" Margin="0,16,0,0"
+                    IsVisible="{Binding ShowNoResults}">
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="😕" FontSize="48" FontFamily="{StaticResource EmojiFont}" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Aucun résultat trouvé" 
+                               FontSize="16" Foreground="#AAAAAA" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Essayez avec un autre terme de recherche" 
+                               FontSize="13" Foreground="#666666" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Résultats de recherche -->
+            <ItemsControl ItemsSource="{Binding SearchResults}" IsVisible="{Binding HasResults}" Margin="0,16,0,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="8"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:RadioStationViewModel">
+                        <Border Classes="station-card">
+                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <!-- Image -->
+                                <Border Grid.Column="0" CornerRadius="6" ClipToBounds="True" 
+                                        Width="64" Height="64" Margin="0,0,16,0">
+                                    <Panel Background="#333333">
+                                        <Image asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" 
+                                               Stretch="UniformToFill"/>
+                                        <TextBlock Text="📻" FontSize="24" FontFamily="{StaticResource EmojiFont}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   IsVisible="{Binding ImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                    </Panel>
+                                </Border>
+
+                                <!-- Infos -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="15" 
+                                               Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="{Binding CountryCode, Converter={x:Static converters:CountryCodeToFlagConverter.Instance}}" 
+                                                   FontSize="14" FontFamily="{StaticResource EmojiFont}"/>
+                                        <TextBlock Text="{Binding Country}" FontSize="13" Foreground="#888888" 
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                    <!-- Tags -->
+                                    <ItemsControl ItemsSource="{Binding Tags}" Margin="0,4,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Classes="tag" Margin="0,0,4,0">
+                                                    <TextBlock Text="{Binding}" FontSize="10" Foreground="#AAAAAA"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <!-- Bouton favori -->
+                                <Button Grid.Column="2" Classes="fav-btn" VerticalAlignment="Center"
+                                        Command="{Binding ToggleFavoriteCommand}">
+                                    <Panel>
+                                        <PathIcon Height="20" Width="20" Foreground="#888888"
+                                                  Data="{StaticResource heart_regular}"
+                                                  IsVisible="{Binding !IsFavorite}"/>
+                                        <PathIcon Height="20" Width="20" Foreground="#1DB954"
+                                                  Data="{StaticResource heart_filled}"
+                                                  IsVisible="{Binding IsFavorite}"/>
+                                    </Panel>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

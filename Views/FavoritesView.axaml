@@ -3,9 +3,42 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:RadioPlayer.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:converters="using:RadioPlayer.Converters"
              mc:Ignorable="d" d:DesignWidth="680" d:DesignHeight="450"
              x:Class="RadioPlayer.Views.FavoritesView"
              x:DataType="vm:FavoritesViewModel">
+
+    <UserControl.Resources>
+        <StreamGeometry x:Key="heart_filled">M12.82,5.58 C10.72,3.48 7.32,3.48 5.22,5.58 C3.12,7.68 3.12,11.08 5.22,13.18 L12,19.96 L18.78,13.18 C20.88,11.08 20.88,7.68 18.78,5.58 C16.68,3.48 13.28,3.48 11.18,5.58 L12,6.4 L12.82,5.58 Z</StreamGeometry>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Border.station-card">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Border.station-card:pointerover">
+            <Setter Property="Background" Value="#2a2a2a"/>
+        </Style>
+        <Style Selector="Button.fav-btn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style Selector="Button.fav-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#333333"/>
+        </Style>
+        <Style Selector="Border.tag">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+    </UserControl.Styles>
 
     <ScrollViewer Padding="24,24,24,24" 
                   HorizontalScrollBarVisibility="Disabled"
@@ -19,7 +52,8 @@
             </StackPanel>
 
             <!-- Placeholder pour la liste vide -->
-            <Border Background="#252525" CornerRadius="12" Padding="32" Margin="0,24,0,0">
+            <Border Background="#252525" CornerRadius="12" Padding="32" Margin="0,24,0,0"
+                    IsVisible="{Binding !HasFavorites}">
                 <StackPanel Spacing="12" HorizontalAlignment="Center">
                     <TextBlock Text="🩵" FontSize="48" FontFamily="{StaticResource EmojiFont}" 
                                HorizontalAlignment="Center"/>
@@ -29,6 +63,68 @@
                                FontSize="13" Foreground="#666666" HorizontalAlignment="Center" TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
+
+            <!-- Liste des favoris -->
+            <ItemsControl ItemsSource="{Binding Favorites}" IsVisible="{Binding HasFavorites}" Margin="0,16,0,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="8"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="vm:RadioStationViewModel">
+                        <Border Classes="station-card">
+                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <!-- Image -->
+                                <Border Grid.Column="0" CornerRadius="6" ClipToBounds="True" 
+                                        Width="64" Height="64" Margin="0,0,16,0">
+                                    <Panel Background="#333333">
+                                        <Image asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" 
+                                               Stretch="UniformToFill"/>
+                                        <TextBlock Text="📻" FontSize="24" FontFamily="{StaticResource EmojiFont}"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   IsVisible="{Binding ImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                    </Panel>
+                                </Border>
+
+                                <!-- Infos -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="15" 
+                                               Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="{Binding CountryCode, Converter={x:Static converters:CountryCodeToFlagConverter.Instance}}" 
+                                                   FontSize="14" FontFamily="{StaticResource EmojiFont}"/>
+                                        <TextBlock Text="{Binding Country}" FontSize="13" Foreground="#888888" 
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                    <!-- Tags -->
+                                    <ItemsControl ItemsSource="{Binding Tags}" Margin="0,4,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Classes="tag" Margin="0,0,4,0">
+                                                    <TextBlock Text="{Binding}" FontSize="10" Foreground="#AAAAAA"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <!-- Bouton favori (toujours rempli car c'est un favori) -->
+                                <Button Grid.Column="2" Classes="fav-btn" VerticalAlignment="Center"
+                                        Command="{Binding ToggleFavoriteCommand}">
+                                    <PathIcon Height="20" Width="20" Foreground="#1DB954"
+                                              Data="{StaticResource heart_filled}"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
