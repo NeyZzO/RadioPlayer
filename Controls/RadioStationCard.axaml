@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:RadioPlayer.ViewModels"
              xmlns:converters="using:RadioPlayer.Converters"
+             xmlns:controls="using:RadioPlayer.Controls"
              mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="260"
              x:Class="RadioPlayer.Controls.RadioStationCard"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
@@ -46,7 +47,6 @@
         <Style Selector="Border.card-container:pointerover Button.fav-btn">
             <Setter Property="Opacity" Value="1"/>
         </Style>
-        <!-- Toujours visible si favori -->
         <Style Selector="Button.fav-btn.is-favorite">
             <Setter Property="Opacity" Value="1"/>
         </Style>
@@ -55,9 +55,16 @@
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="8,4"/>
         </Style>
+        <!-- Couleur du nom quand en lecture -->
+        <Style Selector="TextBlock.station-name">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="TextBlock.station-name.is-playing">
+            <Setter Property="Foreground" Value="#1DB954"/>
+        </Style>
     </UserControl.Styles>
 
-    <Border Classes="card-container">
+    <Border Classes="card-container" PointerPressed="OnCardPressed">
         <StackPanel Spacing="10">
             <Panel>
                 <Border CornerRadius="6" ClipToBounds="True" Width="156" Height="156">
@@ -66,6 +73,11 @@
                         <TextBlock Text="📻" FontSize="24" FontFamily="{StaticResource EmojiFont}"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 IsVisible="{Binding ImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                        <!-- Animation equalizer quand en lecture -->
+                        <Border Background="#00000099" IsVisible="{Binding IsCurrentlyPlaying}"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <controls:EqualizerAnimation HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200"/>
+                        </Border>
                     </Panel>
                 </Border>
                 <Button Classes="fav-btn" Classes.is-favorite="{Binding IsFavorite}"
@@ -81,7 +93,8 @@
                     </Panel>
                 </Button>
             </Panel>
-            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14" Foreground="White" TextTrimming="CharacterEllipsis" MaxWidth="156"/>
+            <TextBlock Text="{Binding Name}" Classes="station-name" Classes.is-playing="{Binding IsCurrentlyPlaying}"
+                       FontWeight="Bold" FontSize="14" TextTrimming="CharacterEllipsis" MaxWidth="156"/>
             <StackPanel Orientation="Horizontal" Spacing="6">
                 <TextBlock Text="{Binding CountryCode, Converter={x:Static converters:CountryCodeToFlagConverter.Instance}}" FontSize="14" FontFamily="{StaticResource EmojiFont}" FontWeight="Normal"/>
                 <TextBlock Text="{Binding Country}" FontSize="12" Foreground="#888888" TextTrimming="CharacterEllipsis" MaxWidth="130"/>

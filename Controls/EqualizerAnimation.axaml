@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="24" d:DesignHeight="24"
+             x:Class="RadioPlayer.Controls.EqualizerAnimation"
+             Width="20" Height="20">
+
+    <UserControl.Styles>
+        <Style Selector="Rectangle.bar">
+            <Setter Property="Fill" Value="#1DB954"/>
+            <Setter Property="Width" Value="4"/>
+            <Setter Property="RadiusX" Value="2"/>
+            <Setter Property="RadiusY" Value="2"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Canvas Width="20" Height="20" ClipToBounds="True">
+        <Rectangle x:Name="Bar1" Classes="bar" Canvas.Left="0" Canvas.Bottom="0" Height="8">
+            <Rectangle.Styles>
+                <Style Selector="Rectangle#Bar1">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.5" IterationCount="INFINITE" PlaybackDirection="Alternate" Easing="SineEaseInOut">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Height" Value="6"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Height" Value="18"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+            </Rectangle.Styles>
+        </Rectangle>
+        
+        <Rectangle x:Name="Bar2" Classes="bar" Canvas.Left="6" Canvas.Bottom="0" Height="14">
+            <Rectangle.Styles>
+                <Style Selector="Rectangle#Bar2">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.7" IterationCount="INFINITE" PlaybackDirection="Alternate" Easing="SineEaseInOut" Delay="0:0:0.2">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Height" Value="10"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Height" Value="20"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+            </Rectangle.Styles>
+        </Rectangle>
+        
+        <Rectangle x:Name="Bar3" Classes="bar" Canvas.Left="12" Canvas.Bottom="0" Height="10">
+            <Rectangle.Styles>
+                <Style Selector="Rectangle#Bar3">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.6" IterationCount="INFINITE" PlaybackDirection="Alternate" Easing="SineEaseInOut" Delay="0:0:0.1">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="Height" Value="4"/>
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="Height" Value="16"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+            </Rectangle.Styles>
+        </Rectangle>
+    </Canvas>
+</UserControl>

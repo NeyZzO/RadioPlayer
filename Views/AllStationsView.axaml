@@ -5,6 +5,7 @@
              xmlns:vm="using:RadioPlayer.ViewModels"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              xmlns:converters="using:RadioPlayer.Converters"
+             xmlns:controls="using:RadioPlayer.Controls"
              mc:Ignorable="d" d:DesignWidth="680" d:DesignHeight="600"
              x:Class="RadioPlayer.Views.AllStationsView"
              x:DataType="vm:AllStationsViewModel">
@@ -84,6 +85,12 @@
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="8,4"/>
         </Style>
+        <Style Selector="TextBlock.station-name">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style Selector="TextBlock.station-name.is-playing">
+            <Setter Property="Foreground" Value="#1DB954"/>
+        </Style>
     </UserControl.Styles>
 
     <Grid RowDefinitions="Auto, Auto, *, Auto">
@@ -130,16 +137,20 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="vm:RadioStationViewModel">
-                            <Border Classes="station-card">
+                            <Border Classes="station-card" PointerPressed="OnStationCardPressed">
                                 <Grid ColumnDefinitions="Auto, *, Auto">
                                     <Border Grid.Column="0" CornerRadius="6" ClipToBounds="True" Width="64" Height="64" Margin="0,0,16,0">
                                         <Panel Background="#333333">
                                             <Image asyncImageLoader:ImageLoader.Source="{Binding ImageUrl}" Stretch="UniformToFill"/>
-                                            <TextBlock Text="❓" FontSize="24" FontFamily="{StaticResource EmojiFont}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding ImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                            <TextBlock Text="📻" FontSize="24" FontFamily="{StaticResource EmojiFont}" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding ImageUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                            <Border Background="#00000099" IsVisible="{Binding IsCurrentlyPlaying}"
+                                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <controls:EqualizerAnimation HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
                                         </Panel>
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="15" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Name}" Classes="station-name" Classes.is-playing="{Binding IsCurrentlyPlaying}" FontWeight="Bold" FontSize="15" TextTrimming="CharacterEllipsis"/>
                                         <StackPanel Orientation="Horizontal" Spacing="6">
                                             <TextBlock Text="{Binding CountryCode, Converter={x:Static converters:CountryCodeToFlagConverter.Instance}}" FontSize="14" FontFamily="{StaticResource EmojiFont}"/>
                                             <TextBlock Text="{Binding Country}" FontSize="13" Foreground="#888888" TextTrimming="CharacterEllipsis"/>

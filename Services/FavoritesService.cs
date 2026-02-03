@@ -11,7 +11,7 @@ using RadioPlayer.Models;
 
 namespace RadioPlayer.Services {
     /// <summary>
-    /// Service singleton pour la gestion des favoris
+    /// Singleton service for favourite management
     /// </summary>
     public sealed class FavoritesService {
         private static readonly Lazy<FavoritesService> _instance = new(() => new FavoritesService());
@@ -22,17 +22,17 @@ namespace RadioPlayer.Services {
         private readonly HashSet<string> _favoriteUuids = new();
 
         /// <summary>
-        /// Collection observable des favoris
+        /// Observable collection for favourites
         /// </summary>
         public ObservableCollection<FavoriteStation> Favorites { get; } = new();
 
         /// <summary>
-        /// Observable émettant les changements de favoris
+        /// Emits favourites change
         /// </summary>
         public IObservable<(string Uuid, bool IsFavorite)> FavoriteChanged => _favoriteChangedSubject.AsObservable();
 
         /// <summary>
-        /// Nombre de favoris
+        /// Favorite count
         /// </summary>
         public int Count => Favorites.Count;
 
@@ -47,7 +47,7 @@ namespace RadioPlayer.Services {
         }
 
         /// <summary>
-        /// Vérifie si une station est en favori
+        /// Checks if a station is in favourites
         /// </summary>
         public bool IsFavorite(string? uuid) {
             if (string.IsNullOrEmpty(uuid)) return false;
@@ -55,7 +55,7 @@ namespace RadioPlayer.Services {
         }
 
         /// <summary>
-        /// Ajoute une station aux favoris
+        /// Adds a radio station to the favourites
         /// </summary>
         public void AddFavorite(RadioStation station) {
             if (string.IsNullOrEmpty(station.stationuuid)) return;
@@ -72,7 +72,7 @@ namespace RadioPlayer.Services {
         }
 
         /// <summary>
-        /// Retire une station des favoris
+        /// Removes a station from the favourites
         /// </summary>
         public void RemoveFavorite(string uuid) {
             if (string.IsNullOrEmpty(uuid)) return;

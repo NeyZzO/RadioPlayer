@@ -10,6 +10,7 @@ namespace RadioPlayer.ViewModels;
 public class RadioStationViewModel : ViewModelBase, IDisposable {
     private readonly RadioStation _station;
     private readonly IDisposable _favoriteSubscription;
+    private readonly IDisposable _playerSubscription;
 
     public RadioStationViewModel(RadioStation station) {
         _station = station;
@@ -17,14 +18,25 @@ public class RadioStationViewModel : ViewModelBase, IDisposable {
         // Vérifier si la station est en favori au chargement
         _isFavorite = FavoritesService.Instance.IsFavorite(station.stationuuid);
 
+        // Vérifier si la station est en cours de lecture
+        _isCurrentlyPlaying = PlayerService.Instance.CurrentStation?.stationuuid == station.stationuuid;
+
         // S'abonner aux changements de favoris
         _favoriteSubscription = FavoritesService.Instance.FavoriteChanged
             .Where(change => change.Uuid == station.stationuuid)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(change => IsFavorite = change.IsFavorite);
 
-        // Commande pour basculer l'état favori
+        // S'abonner aux changements de station en cours
+        _playerSubscription = PlayerService.Instance.CurrentStationChanged
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(currentStation => {
+                IsCurrentlyPlaying = currentStation?.stationuuid == station.stationuuid;
+            });
+
+        // Commandes
         ToggleFavoriteCommand = ReactiveCommand.Create(ToggleFavorite);
+        PlayCommand = ReactiveCommand.Create(Play);
     }
 
     public string Uuid => _station.stationuuid;
@@ -42,7 +54,14 @@ public class RadioStationViewModel : ViewModelBase, IDisposable {
         set => this.RaiseAndSetIfChanged(ref _isFavorite, value);
     }
 
+    private bool _isCurrentlyPlaying;
+    public bool IsCurrentlyPlaying {
+        get => _isCurrentlyPlaying;
+        set => this.RaiseAndSetIfChanged(ref _isCurrentlyPlaying, value);
+    }
+
     public ICommand ToggleFavoriteCommand { get; }
+    public ICommand PlayCommand { get; }
 
     /// <summary>
     /// Retourne le modèle RadioStation sous-jacent
@@ -53,7 +72,12 @@ public class RadioStationViewModel : ViewModelBase, IDisposable {
         FavoritesService.Instance.Toggle(_station);
     }
 
+    private void Play() {
+        PlayerService.Instance.Play(_station);
+    }
+
     public void Dispose() {
         _favoriteSubscription.Dispose();
+        _playerSubscription.Dispose();
     }
 }
