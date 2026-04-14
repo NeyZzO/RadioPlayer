@@ -17,4 +17,27 @@
     <Application.Styles>
         <semi:SemiTheme/>
     </Application.Styles>
+
+    <TrayIcon.Icons>
+		<TrayIcons>
+			<TrayIcon Icon="/Assets/logo.png"
+                      ToolTipText="RadioPlayer">
+				<TrayIcon.Menu>
+                  <NativeMenu>
+                    <NativeMenuItem Header="Favourites">
+                      <NativeMenu>
+                        <NativeMenuItem Header="Not" />
+                        <NativeMenuItem Header="Yet" />
+                        <NativeMenuItem Header="Implemented" />
+                      </NativeMenu>
+                    </NativeMenuItem>
+                    <NativeMenuItem Header="Pause/Play" />
+                    <NativeMenuItem Header="Random station" />
+                    <NativeMenuItemSeparator />
+                    <NativeMenuItem Header="Quit application" />
+                  </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
 </Application>
